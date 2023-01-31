@@ -13,6 +13,8 @@ contract Lottery is VRFConsumerBaseV2, ConfirmedOwner, ReentrancyGuard {
     event LotteryStarted(uint256 lotId);
     event PlayerJoined(uint256 lotId, address player);
     event LotteryEnded(uint256 lotId, address winner, uint256 reward);
+    event RequestSent(uint256 requestId, uint32 numWords);
+    event RequestFulfilled(uint256 requestId, uint256[] randomWords);
 
     // Errors
     error DidNotPayCorrectEntryBalance(address receiver, uint256 value);
@@ -161,7 +163,6 @@ contract Lottery is VRFConsumerBaseV2, ConfirmedOwner, ReentrancyGuard {
     }
 
     fallback() payable external {
-        require(msg.data.length == 0);
         joinLottery();
     }
 }

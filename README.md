@@ -1,2 +1,2 @@
 # Lottery
-Lottery contract using Chainlink VRF (on-going)
+Lottery contract using Chainlink VRF 

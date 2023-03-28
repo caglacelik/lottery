@@ -78,7 +78,6 @@ contract Lottery is VRFConsumerBaseV2, ConfirmedOwner, ReentrancyGuard {
     }
 
     function startLottery() external checkEnded onlyOwner {
-        // delete players[lotteryId];
         currentState = LotteryState.Started;
         lotteryId += 1;
 

@@ -26,7 +26,7 @@ contract Lottery is VRFConsumerBaseV2, ConfirmedOwner, ReentrancyGuard {
     }
 
     modifier checkStarted {
-        require(currentState == LotteryState.Started, "Lottery ended");
+        require(currentState == LotteryState.Started, "Lottery not started");
         _;
     }
 
@@ -78,7 +78,7 @@ contract Lottery is VRFConsumerBaseV2, ConfirmedOwner, ReentrancyGuard {
     }
 
     function startLottery() external checkEnded onlyOwner {
-        delete players[lotteryId];
+        // delete players[lotteryId];
         currentState = LotteryState.Started;
         lotteryId += 1;
 
@@ -111,9 +111,11 @@ contract Lottery is VRFConsumerBaseV2, ConfirmedOwner, ReentrancyGuard {
         uint256 index = _randomWords[0] % players[lotteryId].length;
         address winner = players[lotteryId][index];
         // %20 profit for coordinator
-        profit += (2 * reward) / 10;
-        reward = (8 * reward) / 10;
-        winners[winner] = reward;
+        uint256 _reward = reward;
+        profit += (2 * _reward) / 10;
+        _reward = 8 * _reward / 10;
+        winners[winner] = _reward;
+        reward = _reward;
         currentState = LotteryState.Ended;
 
         emit LotteryEnded(lotteryId, winner, reward); 
@@ -153,7 +155,7 @@ contract Lottery is VRFConsumerBaseV2, ConfirmedOwner, ReentrancyGuard {
     }
 
     function getBalance() external view returns(uint256) {
-        return address(this).balance;
+        return profit + reward;
     }
 
     receive() payable external {
